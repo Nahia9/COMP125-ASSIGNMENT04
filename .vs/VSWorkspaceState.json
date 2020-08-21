@@ -1,9 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Scripts",
-    "\\Scripts\\core"
+    "\\Assets",
+    "\\Scripts"
   ],
-  "SelectedNode": "\\Scripts\\core\\app.ts",
+  "SelectedNode": "\\package.json",
   "PreviewInSolutionExplorer": false
 }

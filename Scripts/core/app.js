@@ -25,6 +25,17 @@
     let bells = 0;
     let sevens = 0;
     let blanks = 0;
+    let playerBet = 0;
+    let winnings = 0;
+    //let credits = 1000;
+    let jackpot = 5000;
+    //let win = 0;
+    //let loss = 0;
+    let winRatio = 0;
+    let turn = 0;
+    let winNumber = 0;
+    let lossNumber = 0;
+    let playerMoney = 0;
     let manifest = [
         { id: "background", src: "./Assets/images/background.png" },
         { id: "banana", src: "./Assets/images/banana.gif" },
@@ -65,6 +76,61 @@
     function Update() {
         stage.update();
     }
+    function showPlayerStats() {
+        winRatio = winNumber / turn;
+        $("#jackpot").text("Jackpot: " + jackpot);
+        $("#playerMoney").text("Player Money: " + playerMoney);
+        $("#playerTurn").text("Turn: " + turn);
+        $("#playerWins").text("Wins: " + winNumber);
+        $("#playerLosses").text("Losses: " + lossNumber);
+        $("#playerWinRatio").text("Win Ratio: " + (winRatio * 100).toFixed(2) + "%");
+    }
+    /* Utility function to reset all fruit tallies */
+    function resetFruitTally() {
+        grapes = 0;
+        bananas = 0;
+        oranges = 0;
+        cherries = 0;
+        bars = 0;
+        bells = 0;
+        sevens = 0;
+        blanks = 0;
+    }
+    /* Utility function to reset the player stats */
+    function resetAll() {
+        playerMoney = 2000;
+        winnings = 0;
+        jackpot = 100000;
+        turn = 0;
+        playerBet = 0;
+        winNumber = 0;
+        lossNumber = 0;
+        winRatio = 0;
+    }
+    /* Check to see if the player won the jackpot */
+    function checkJackPot() {
+        /* compare two random values */
+        let jackPotTry = Math.floor(Math.random() * 51 + 1);
+        let jackPotWin = Math.floor(Math.random() * 51 + 1);
+        if (jackPotTry == jackPotWin) {
+            alert("You Won the $" + jackpot + " Jackpot!!");
+            playerMoney += jackpot;
+            jackpot = 100000;
+        }
+    }
+    /* Utility function to show a win message and increase player money */
+    function showWinMessage() {
+        playerMoney += winnings;
+        $("div#winOrLose>p").text("You Won: $" + winnings);
+        resetFruitTally();
+        checkJackPot();
+    }
+    /* Utility function to show a loss message and reduce player money */
+    function showLossMessage() {
+        playerMoney -= playerBet;
+        $("div#winOrLose>p").text("You Lost!");
+        resetFruitTally();
+    }
     /* Utility function to check if a value falls within a range of bounds */
     function checkRange(value, lowerBounds, upperBounds) {
         if (value >= lowerBounds && value <= upperBounds) {
@@ -77,8 +143,8 @@
     /* When this function is called it determines the betLine results.
     e.g. Bar - Orange - Banana */
     function Reels() {
-        var betLine = [" ", " ", " "];
-        var outCome = [0, 0, 0];
+        let betLine = [" ", " ", " "];
+        let outCome = [0, 0, 0];
         for (var spin = 0; spin < 3; spin++) {
             outCome[spin] = Math.floor((Math.random() * 65) + 1);
             switch (outCome[spin]) {
@@ -118,6 +184,65 @@
         }
         return betLine;
     }
+    /* This function calculates the player's winnings, if any */
+    function determineWinnings() {
+        if (blanks == 0) {
+            if (grapes == 3) {
+                winnings = playerBet * 10;
+            }
+            else if (bananas == 3) {
+                winnings = playerBet * 20;
+            }
+            else if (oranges == 3) {
+                winnings = playerBet * 30;
+            }
+            else if (cherries == 3) {
+                winnings = playerBet * 40;
+            }
+            else if (bars == 3) {
+                winnings = playerBet * 50;
+            }
+            else if (bells == 3) {
+                winnings = playerBet * 75;
+            }
+            else if (sevens == 3) {
+                winnings = playerBet * 100;
+            }
+            else if (grapes == 2) {
+                winnings = playerBet * 2;
+            }
+            else if (bananas == 2) {
+                winnings = playerBet * 2;
+            }
+            else if (oranges == 2) {
+                winnings = playerBet * 3;
+            }
+            else if (cherries == 2) {
+                winnings = playerBet * 4;
+            }
+            else if (bars == 2) {
+                winnings = playerBet * 5;
+            }
+            else if (bells == 2) {
+                winnings = playerBet * 10;
+            }
+            else if (sevens == 2) {
+                winnings = playerBet * 20;
+            }
+            else if (sevens == 1) {
+                winnings = playerBet * 5;
+            }
+            else {
+                winnings = playerBet * 1;
+            }
+            winNumber++;
+            showWinMessage();
+        }
+        else {
+            lossNumber++;
+            showLossMessage();
+        }
+    }
     function buildInterface() {
         // Slot Machine Background
         slotMachineBackground = new Core.GameObject("background", Config.Screen.CENTER_X, Config.Screen.CENTER_Y, true);
@@ -134,13 +259,13 @@
         betMaxButton = new UIObjects.Button("betMaxButton", Config.Screen.CENTER_X + 67, Config.Screen.CENTER_Y + 176, true);
         stage.addChild(betMaxButton);
         // Labels
-        jackPotLabel = new UIObjects.Label("99999999", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X, Config.Screen.CENTER_Y - 175, true);
+        jackPotLabel = new UIObjects.Label("1000000", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X, Config.Screen.CENTER_Y - 175, true);
         stage.addChild(jackPotLabel);
-        creditLabel = new UIObjects.Label("99999999", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X - 94, Config.Screen.CENTER_Y + 108, true);
+        creditLabel = new UIObjects.Label("2000", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X - 94, Config.Screen.CENTER_Y + 108, true);
         stage.addChild(creditLabel);
-        winningsLabel = new UIObjects.Label("99999999", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X + 94, Config.Screen.CENTER_Y + 108, true);
+        winningsLabel = new UIObjects.Label("0", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X + 94, Config.Screen.CENTER_Y + 108, true);
         stage.addChild(winningsLabel);
-        betLabel = new UIObjects.Label("9999", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X, Config.Screen.CENTER_Y + 108, true);
+        betLabel = new UIObjects.Label("0", "20px", "Consolas", "#FF0000", Config.Screen.CENTER_X, Config.Screen.CENTER_Y + 108, true);
         stage.addChild(betLabel);
         // Reel GameObjects
         leftReel = new Core.GameObject("bell", Config.Screen.CENTER_X - 79, Config.Screen.CENTER_Y - 12, true);
@@ -157,10 +282,31 @@
         spinButton.on("click", () => {
             // reel test
             let reels = Reels();
-            // example of how to replace the images in the reels
-            leftReel.image = assets.getResult(reels[0]);
-            middleReel.image = assets.getResult(reels[1]);
-            rightReel.image = assets.getResult(reels[2]);
+            if (playerMoney == 0) {
+                if (confirm("You ran out of Money! \nDo you want to play again?")) {
+                    resetAll();
+                    showPlayerStats();
+                }
+            }
+            else if (playerBet > playerMoney) {
+                alert("You don't have enough Money to place that bet.");
+            }
+            else if (playerBet < 0) {
+                alert("All bets must be a positive $ amount.");
+            }
+            else if (playerBet <= playerMoney) {
+                // example of how to replace the images in the reels
+                leftReel.image = assets.getResult(reels[0]);
+                middleReel.image = assets.getResult(reels[1]);
+                rightReel.image = assets.getResult(reels[2]);
+                determineWinnings();
+                turn++;
+                showPlayerStats();
+            }
+            else {
+                alert("Please enter a valid bet amount");
+            }
+            checkJackPot();
         });
         bet1Button.on("click", () => {
             console.log("bet1Button Button Clicked");
