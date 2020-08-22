@@ -2,20 +2,24 @@
     // Function scoped Variables
     let stage: createjs.Stage;
     let assets: createjs.LoadQueue;
+
     let slotMachineBackground: Core.GameObject;
-    let spinButton: UIObjects.Button;
-    let bet1Button: UIObjects.Button;
-    let bet10Button: UIObjects.Button;
-    let bet100Button: UIObjects.Button;
-    let betMaxButton: UIObjects.Button;
-    let jackPotLabel: UIObjects.Label;
-    let creditLabel: UIObjects.Label;
-    let winningsLabel: UIObjects.Label;
-    let betLabel: UIObjects.Label;
     let leftReel: Core.GameObject;
     let middleReel: Core.GameObject;
     let rightReel: Core.GameObject;
     let betLine: Core.GameObject;
+
+    let spinButton: UIObjects.Button;
+    let resetButton: UIObjects.Button;
+    let bet10Button: UIObjects.Button;
+    let bet100Button: UIObjects.Button;
+    let betMaxButton: UIObjects.Button;
+
+    let jackPotLabel: UIObjects.Label;
+    let creditLabel: UIObjects.Label;
+    let winningsLabel: UIObjects.Label;
+    let betLabel: UIObjects.Label;
+    
 
     // symbol tallies
     let grapes = 0;
@@ -28,15 +32,14 @@
     let blanks = 0;
     let playerBet = 0;
     let winnings = 0;
-    //let credits = 1000;
-    let jackpot = 5000;
+    let credit = 2000;
+    let jackpot = 100000;
     //let win = 0;
     //let loss = 0;
     let winRatio =0;
     let turn =0;
     let winNumber = 0;
     let lossNumber = 0;
-    let playerMoney = 0;
     
 
     let manifest: Core.Item[] = [
@@ -45,7 +48,7 @@
         {id:"bar", src:"./Assets/images/bar.gif"},
         {id:"bell", src:"./Assets/images/bell.gif"},
         {id:"bet_line", src:"./Assets/images/bet_line.gif"},
-        {id:"bet1Button", src:"./Assets/images/bet1Button.png"},
+        {id:"resetButton", src:"./Assets/images/resetButton.png"},
         {id:"bet10Button", src:"./Assets/images/bet10Button.png"},
         {id:"bet100Button", src:"./Assets/images/bet100Button.png"},
         {id:"betMaxButton", src:"./Assets/images/betMaxButton.png"},
@@ -93,7 +96,7 @@
     {
         winRatio = winNumber / turn;
         $("#jackpot").text("Jackpot: " + jackpot);
-        $("#playerMoney").text("Player Money: " + playerMoney);
+        $("#credit").text("credit: " + credit);
         $("#playerTurn").text("Turn: " + turn);
         $("#playerWins").text("Wins: " + winNumber);
         $("#playerLosses").text("Losses: " + lossNumber);
@@ -116,7 +119,7 @@
     /* Utility function to reset the player stats */
     function resetAll() 
     {
-        playerMoney = 2000;
+        credit = 2000;
         winnings = 0;
         jackpot = 100000;
         turn = 0;
@@ -133,9 +136,10 @@
         /* compare two random values */
         let jackPotTry = Math.floor(Math.random() * 51 + 1);
         let jackPotWin = Math.floor(Math.random() * 51 + 1);
-        if (jackPotTry == jackPotWin) {
+        if (jackPotTry == jackPotWin) 
+        {
             alert("You Won the $" + jackpot + " Jackpot!!");
-            playerMoney += jackpot;
+            credit += jackpot;
             jackpot = 100000;
         }
     }
@@ -214,8 +218,8 @@
         spinButton = new UIObjects.Button("spinButton", Config.Screen.CENTER_X + 135, Config.Screen.CENTER_Y + 176, true);
         stage.addChild(spinButton);
 
-        bet1Button = new UIObjects.Button("bet1Button", Config.Screen.CENTER_X - 135, Config.Screen.CENTER_Y + 176, true);
-        stage.addChild(bet1Button);
+        resetButton = new UIObjects.Button("resetButton", Config.Screen.CENTER_X - 135, Config.Screen.CENTER_Y + 176, true);
+        stage.addChild(resetButton);
 
         bet10Button = new UIObjects.Button("bet10Button", Config.Screen.CENTER_X - 67, Config.Screen.CENTER_Y + 176, true);
         stage.addChild(bet10Button);
@@ -257,85 +261,90 @@
     function interfaceLogic():void
     {
         /* Utility function to show a win message and increase player money */
-        function showWinMessage() 
+        function WinMessage() 
         {
-        playerMoney += winnings;
-        $("div#winOrLose>p").text("You Won: $" + winnings);
-        resetFruitTally();
-        checkJackPot();
+            if (credit += winnings)
+            {
+                alert("Congratulation! You win");
+            }
+            resetFruitTally();
+            checkJackPot();
         }
     
     /* Utility function to show a loss message and reduce player money */
-        function showLossMessage() 
+        function LossMessage() 
         {
-        playerMoney -= playerBet;
-        $("div#winOrLose>p").text("You Lost!");
+        if (credit -= playerBet)
+        {
+            alert("Sorry! You lose");
+        }
         resetFruitTally();
         }
-        
         
         //This function calculates the player's winnings, if any 
         function determineWinnings() 
         {
-        if (blanks == 0) {
-            if (grapes == 3) 
+        if (blanks == 0) 
             {
-                winnings = playerBet * 10;
-            } 
-            else if (bananas == 3) 
-            {
-                winnings = playerBet * 20;
-            } 
-            else if (oranges == 3) 
-            {
-                winnings = playerBet * 30;
-            } 
-            else if (cherries == 3) {
-                winnings = playerBet * 40;
-            } 
-            else if (bars == 3) {
-                winnings = playerBet * 50;
+                if (grapes == 3) 
+                {
+                    winnings = playerBet * 10;
+                } 
+                else if (bananas == 3) 
+                {
+                    winnings = playerBet * 20;
+                } 
+                else if (oranges == 3) 
+                {
+                    winnings = playerBet * 30;
+                } 
+                else if (cherries == 3) {
+                    winnings = playerBet * 40;
+                } 
+                else if (bars == 3) {
+                    winnings = playerBet * 50;
+                }
+                else if (bells == 3) {
+                    winnings = playerBet * 75;
+                } 
+                else if (sevens == 3) {
+                    winnings = playerBet * 100;
+                } 
+                else if (grapes == 2) {
+                    winnings = playerBet * 2;
+                } 
+                else if (bananas == 2) {
+                    winnings = playerBet * 2;
+                } 
+                else if (oranges == 2) {
+                    winnings = playerBet * 3;
+                } 
+                else if (cherries == 2) {
+                    winnings = playerBet * 4;
+                } 
+                else if (bars == 2) {
+                    winnings = playerBet * 5;
+                } 
+                else if (bells == 2) {
+                    winnings = playerBet * 10;
+                } 
+                else if (sevens == 2) {
+                    winnings = playerBet * 20;
+                } 
+                else if (sevens == 1) {
+                    winnings = playerBet * 5;
+                }
+                else if (grapes == 1)
+                {
+                    winnings = playerBet * 1;
+                }
+                winNumber++;
+                WinMessage();
             }
-             else if (bells == 3) {
-                winnings = playerBet * 75;
-            } 
-            else if (sevens == 3) {
-                winnings = playerBet * 100;
-            } 
-            else if (grapes == 2) {
-                winnings = playerBet * 2;
-            } 
-            else if (bananas == 2) {
-                winnings = playerBet * 2;
-            } 
-            else if (oranges == 2) {
-                winnings = playerBet * 3;
-            } 
-            else if (cherries == 2) {
-                winnings = playerBet * 4;
-            } 
-            else if (bars == 2) {
-                winnings = playerBet * 5;
-            } 
-            else if (bells == 2) {
-                winnings = playerBet * 10;
-            } 
-            else if (sevens == 2) {
-                winnings = playerBet * 20;
-            } 
-            else if (sevens == 1) {
-                winnings = playerBet * 5;
-            }
-            else {
-                winnings = playerBet * 1;
-            }
-            winNumber++;
-            showWinMessage();
-            } 
-            else 
+            else
             {
-            lossNumber++;
-            showLossMessage();
+                lossNumber++;
+                LossMessage();
             }
         }
 
@@ -345,22 +354,17 @@
             // reel test
             let reels = Reels();
 
-            if (playerMoney == 0)
+            if (credit == 0)
             {
-                if (confirm("You run out of Money! \nDo you want to play again?")) {
+                alert("You run out of Money! \nDo you want to play again?");
                 resetAll();
                 showPlayerStats();
             }
-            }
-            else if (playerBet > playerMoney) 
+            else if (playerBet > credit) 
             {
                 alert("You don't have enough Money to place that bet.");
             }
-            else if (playerBet < 0) 
-            {
-                alert("All bets must be a positive $ amount.");
-            }
-            else if (playerBet <= playerMoney)
+            else if (playerBet <= credit)
             {
             // example of how to replace the images in the reels
             leftReel.image = assets.getResult(reels[0]) as HTMLImageElement;
@@ -377,11 +381,8 @@
             }
             checkJackPot();
         });
-    
-    
-    
 
-        bet1Button.on("click", ()=>{
+        resetButton.on("click", ()=>{
             console.log("bet1Button Button Clicked");
         });
 
