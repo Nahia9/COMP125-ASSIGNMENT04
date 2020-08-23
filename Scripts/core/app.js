@@ -27,10 +27,8 @@
     let blanks = 0;
     let playerBet = 0;
     let winnings = 0;
-    let credit = 2000;
-    let jackpot = 10000;
-    let winRatio = 0;
-    let turn = 0;
+    let credit = 1000;
+    let jackpot = 5000;
     let winNumber = 0;
     let lossNumber = 0;
     let manifest = [
@@ -178,11 +176,7 @@
         credit = 1000;
         winnings = 0;
         jackpot = 5000;
-        turn = 0;
         playerBet = 0;
-        winNumber = 0;
-        lossNumber = 0;
-        winRatio = 0;
     }
     /* Check to see if the player won the jackpot */
     function checkJackPot() {
@@ -198,7 +192,7 @@
     /* Utility function to show a win message and increase player money */
     function WinMessage() {
         credit += winnings;
-        console.log("Congratulation! You win");
+        alert("Congratulation! You win");
         // Update winningsLabel
         winningsLabel.setText(winnings.toString());
         // Update the creditLabel
@@ -209,7 +203,7 @@
     /* Utility function to show a loss message and reduce player money */
     function LossMessage() {
         credit -= playerBet;
-        console.log("Sorry! You lose");
+        alert("Sorry! You lose");
         // Update the creditLabel
         creditLabel.setText(credit.toString());
         resetFruitTally();
@@ -248,7 +242,7 @@
                 winnings = playerBet * 3;
             }
             else if (cherries == 2) {
-                credit += winnings;
+                winnings = playerBet * 2;
             }
             else if (bars == 2) {
             }
@@ -268,13 +262,11 @@
         }
         else {
             LossMessage();
-            credit -= winnings;
         }
     }
     function interfaceLogic() {
         spinButton.on("click", () => {
-            winningsLabel.setText("0");
-            winnings = 0;
+            // winningsLabel.setText("0");
             let reels = Reels();
             if (playerBet > credit) {
                 alert("You don't have enough Money to place that bet.");
@@ -288,8 +280,6 @@
                 middleReel.image = assets.getResult(reels[1]);
                 rightReel.image = assets.getResult(reels[2]);
                 determineWinnings();
-                winningsLabel.text = winnings.toString();
-                creditLabel.text = credit.toString();
             }
             else {
                 alert("Please enter a valid bet amount");

@@ -1,26 +1,31 @@
+/*
+File name: app.ts
+Student Name: Nahia Akter
+Student no.: 301106956
+Date: 23/08/2020
+File Description: Slot machine game functionality goes here
+*/
+
 (function(){
     // Function scoped Variables
     let stage: createjs.Stage;
     let assets: createjs.LoadQueue;
-
     let slotMachineBackground: Core.GameObject;
     let leftReel: Core.GameObject;
     let middleReel: Core.GameObject;
     let rightReel: Core.GameObject;
     let betLine: Core.GameObject;
-
+    // Game button
     let spinButton: UIObjects.Button;
     let resetButton: UIObjects.Button;
     let bet10Button: UIObjects.Button;
     let bet100Button: UIObjects.Button;
     let betMaxButton: UIObjects.Button;
-
+    // Game label
     let jackPotLabel: UIObjects.Label;
     let creditLabel: UIObjects.Label;
     let winningsLabel: UIObjects.Label;
     let betLabel: UIObjects.Label;
-    
-
     // symbol tallies
     let grapes = 0;
     let bananas = 0;
@@ -32,13 +37,8 @@
     let blanks = 0;
     let playerBet = 0;
     let winnings = 0;
-    let credit = 2000;
-    let jackpot = 10000;
-    let winRatio =0;
-    let turn =0;
-    let winNumber = 0;
-    let lossNumber = 0;
-    
+    let credit = 1000;
+    let jackpot = 5000;
 
     let manifest: Core.Item[] = [
         {id:"background", src:"./Assets/images/background.png"},
@@ -221,11 +221,7 @@
         credit = 1000;
         winnings = 0;
         jackpot = 5000;
-        turn = 0;
         playerBet = 0;
-        winNumber = 0;
-        lossNumber = 0;
-        winRatio = 0;
     }
     
     /* Check to see if the player won the jackpot */
@@ -245,30 +241,31 @@
     function WinMessage() : void
     {
         credit += winnings
-        console.log("Congratulation! You win");
+        alert("Congratulation! You win");
         // Update winningsLabel
         winningsLabel.setText(winnings.toString());
         // Update the creditLabel
-        creditLabel.setText(credit.toString());
+        creditLabel.setText(credit.toString())
         
         resetFruitTally();
         checkJackPot();
 
     }
 
-/* Utility function to show a loss message and reduce player money */
+    /* Utility function to show a loss message and reduce player money */
     function LossMessage() : void
     {
         credit -= playerBet
-        console.log("Sorry! You lose");
+        alert("Sorry! You lose");
         // Update the creditLabel
         creditLabel.setText(credit.toString());
         resetFruitTally();
     }
     
     //This function calculates the player's winnings, if any 
-    function determineWinnings(): void 
+    function determineWinnings(): void
     {
+
     if (blanks == 0) 
         {
             if (grapes == 3) 
@@ -305,7 +302,8 @@
                 winnings = playerBet * 3;
             } 
             else if (cherries == 2) {
-                credit += winnings;
+
+                winnings = playerBet * 2;
             } 
             else if (bars == 2) {
             } 
@@ -326,17 +324,17 @@
         }
         else
         {
+            
             LossMessage();
-            credit -= winnings
         }
+
     }
 
     function interfaceLogic():void
     {
         spinButton.on("click", ()=>
         {
-            winningsLabel.setText("0");
-            winnings = 0;
+           // winningsLabel.setText("0");
 
             let reels = Reels();
 
@@ -356,8 +354,6 @@
                 rightReel.image = assets.getResult(reels[2]) as HTMLImageElement;
                 
                 determineWinnings();
-                winningsLabel.text = winnings.toString();
-                creditLabel.text = credit.toString();
             }
             else 
             {
