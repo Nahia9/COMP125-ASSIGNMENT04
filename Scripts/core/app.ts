@@ -242,9 +242,10 @@ File Description: Slot machine game functionality goes here
     {
         credit += winnings
         alert("Congratulation! You win");
+        
         // Update winningsLabel
         winningsLabel.setText(winnings.toString());
-        // Update the creditLabel
+        // Update creditLabel
         creditLabel.setText(credit.toString())
         
         resetFruitTally();
@@ -256,7 +257,7 @@ File Description: Slot machine game functionality goes here
     function LossMessage() : void
     {
         credit -= playerBet
-        alert("Sorry! You lose");
+
         // Update the creditLabel
         creditLabel.setText(credit.toString());
         resetFruitTally();
@@ -324,17 +325,15 @@ File Description: Slot machine game functionality goes here
         }
         else
         {
-            
             LossMessage();
         }
 
     }
-
+    // game logic goes here
     function interfaceLogic():void
     {
         spinButton.on("click", ()=>
         {
-           // winningsLabel.setText("0");
 
             let reels = Reels();
 

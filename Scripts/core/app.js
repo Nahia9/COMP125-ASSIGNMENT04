@@ -1,3 +1,10 @@
+/*
+File name: app.ts
+Student Name: Nahia Akter
+Student no.: 301106956
+Date: 23/08/2020
+File Description: Slot machine game functionality goes here
+*/
 (function () {
     // Function scoped Variables
     let stage;
@@ -7,11 +14,13 @@
     let middleReel;
     let rightReel;
     let betLine;
+    // Game button
     let spinButton;
     let resetButton;
     let bet10Button;
     let bet100Button;
     let betMaxButton;
+    // Game label
     let jackPotLabel;
     let creditLabel;
     let winningsLabel;
@@ -29,8 +38,6 @@
     let winnings = 0;
     let credit = 1000;
     let jackpot = 5000;
-    let winNumber = 0;
-    let lossNumber = 0;
     let manifest = [
         { id: "background", src: "./Assets/images/background.png" },
         { id: "banana", src: "./Assets/images/banana.gif" },
@@ -195,7 +202,7 @@
         alert("Congratulation! You win");
         // Update winningsLabel
         winningsLabel.setText(winnings.toString());
-        // Update the creditLabel
+        // Update creditLabel
         creditLabel.setText(credit.toString());
         resetFruitTally();
         checkJackPot();
@@ -203,7 +210,6 @@
     /* Utility function to show a loss message and reduce player money */
     function LossMessage() {
         credit -= playerBet;
-        alert("Sorry! You lose");
         // Update the creditLabel
         creditLabel.setText(credit.toString());
         resetFruitTally();
@@ -264,9 +270,9 @@
             LossMessage();
         }
     }
+    // game logic goes here
     function interfaceLogic() {
         spinButton.on("click", () => {
-            // winningsLabel.setText("0");
             let reels = Reels();
             if (playerBet > credit) {
                 alert("You don't have enough Money to place that bet.");
